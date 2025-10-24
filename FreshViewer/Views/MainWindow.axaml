@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:FreshViewer.Controls"
         xmlns:vm="clr-namespace:FreshViewer.ViewModels"
-        xmlns:lg="clr-namespace:FreshViewer.UI.LiquidGlass"
+        xmlns:lg="clr-namespace:FreshViewer.Effects.LiquidGlass"
 
         xmlns:easing="clr-namespace:Avalonia.Animation.Easings;assembly=Avalonia.Base"
         xmlns:conv="clr-namespace:FreshViewer.Converters"
@@ -114,7 +114,7 @@
         <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
 
-      <lg:LiquidGlassDecorator Grid.Row="0" Radius="32">
+      <lg:LiquidGlassDecorator Grid.Row="0" Radius="32" IsEffectEnabled="{Binding EnableLiquidGlass}">
         <Border CornerRadius="32"
                 Padding="28,22"
                 Background="{StaticResource Glass.Surface}"
@@ -239,7 +239,7 @@
         </Border>
       </lg:LiquidGlassDecorator>
 
-      <lg:LiquidGlassDecorator Grid.Row="2" Radius="20">
+      <lg:LiquidGlassDecorator Grid.Row="2" Radius="20" IsEffectEnabled="{Binding EnableLiquidGlass}">
         <Border CornerRadius="20"
                 Padding="18,12"
                 Margin="0,28,0,0"
@@ -263,7 +263,7 @@
       </lg:LiquidGlassDecorator>
     </Grid>
 
-    <lg:LiquidGlassDecorator Radius="22">
+    <lg:LiquidGlassDecorator Radius="22" IsEffectEnabled="{Binding EnableLiquidGlass}">
       <Border x:Name="SummaryCard"
               HorizontalAlignment="Left"
               VerticalAlignment="Top"
@@ -292,7 +292,7 @@
       </Border>
     </lg:LiquidGlassDecorator>
 
-    <lg:LiquidGlassDecorator Radius="34">
+    <lg:LiquidGlassDecorator Radius="34" IsEffectEnabled="{Binding EnableLiquidGlass}">
       <Border x:Name="InfoPanel"
               HorizontalAlignment="Left"
               VerticalAlignment="Stretch"
@@ -352,7 +352,7 @@
       </Border>
     </lg:LiquidGlassDecorator>
 
-    <lg:LiquidGlassDecorator Radius="30">
+    <lg:LiquidGlassDecorator Radius="30" IsEffectEnabled="{Binding EnableLiquidGlass}">
       <Border x:Name="SettingsPanel"
               HorizontalAlignment="Right"
               VerticalAlignment="Top"
@@ -389,6 +389,28 @@
             <ToggleSwitch Content="Liquid Glass эффекты" IsChecked="{Binding EnableLiquidGlass}" />
             <ToggleSwitch Content="Анимации интерфейса" IsChecked="{Binding EnableAmbientAnimations}" />
           </StackPanel>
+          <lg:LiquidGlassDecorator Radius="18"
+                                   Intensity="0.7"
+                                   BlurAmount="0.2"
+                                   ChromaticAberration="0.3"
+                                   IsEffectEnabled="{Binding EnableLiquidGlass}">
+            <Border Padding="16"
+                    CornerRadius="18"
+                    Background="#3CFFFFFF"
+                    BorderBrush="#52FFFFFF"
+                    BorderThickness="1">
+              <StackPanel Spacing="6">
+                <TextBlock Text="Liquid Glass preview"
+                           Foreground="#0E1426"
+                           FontWeight="SemiBold"
+                           FontSize="14" />
+                <TextBlock Text="Toggle the switch above to compare the shader and fallback rendering."
+                           Foreground="#1A1F32"
+                           FontSize="12"
+                           TextWrapping="Wrap" />
+              </StackPanel>
+            </Border>
+          </lg:LiquidGlassDecorator>
           <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
             <Button Padding="10,8" Click="OnExportShortcutsClicked">Экспорт</Button>
             <Button Padding="10,8" Click="OnImportShortcutsClicked">Импорт</Button>

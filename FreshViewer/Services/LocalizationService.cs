@@ -8,9 +8,8 @@ using Avalonia.Markup.Xaml;
 namespace FreshViewer.Services;
 
 /// <summary>
-/// Простейшая локализация на основе CultureInfo.CurrentUICulture.
-/// Сейчас хранит только выбранную культуру; ключи в XAML пока статические.
-/// Расширяется до полноценного IStringLocalizer при необходимости.
+/// Provides a very small culture switcher by loading prebuilt resource dictionaries.
+/// The implementation keeps the default <see cref="CultureInfo"/> synchronized with the selected language.
 /// </summary>
 public static class LocalizationService
 {
@@ -22,6 +21,9 @@ public static class LocalizationService
         ["Deutsch"] = "de-DE"
     };
 
+    /// <summary>
+    /// Applies the requested UI language by loading a corresponding resource dictionary.
+    /// </summary>
     public static void ApplyLanguage(string languageName)
     {
         if (!LanguageToCulture.TryGetValue(languageName, out var culture))
@@ -53,7 +55,7 @@ public static class LocalizationService
             return;
         }
 
-        // Удаляем предыдущие словари строк
+        // Remove previous string dictionaries so only one language is active at a time.
         for (var i = app.Resources.MergedDictionaries.Count - 1; i >= 0; i--)
         {
             if (app.Resources.MergedDictionaries[i] is ResourceDictionary existing

@@ -8,15 +8,19 @@ using Avalonia.Platform;
 
 namespace FreshViewer;
 
+/// <summary>
+/// Configures resources and starts the FreshViewer desktop lifetime.
+/// </summary>
 public partial class App : Application
 {
+    /// <inheritdoc />
     public override void Initialize()
     {
         try
         {
             AvaloniaXamlLoader.Load(this);
 
-            // Загружаем дополнительные стили LiquidGlass только если основная загрузка прошла успешно
+            // Load Liquid Glass resources only after the core dictionary is in place.
             try
             {
                 var baseUri = new Uri("avares://FreshViewer/App.axaml");
@@ -39,13 +43,13 @@ public partial class App : Application
         }
     }
 
+    /// <inheritdoc />
     public override void OnFrameworkInitializationCompleted()
     {
         try
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                // Создаем главное окно с обработкой ошибок
                 Views.MainWindow? window = null;
 
                 try
@@ -56,14 +60,12 @@ public partial class App : Application
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Error creating main window: {ex}");
-                    // Создаем окно без аргументов если с аргументами не получилось
                     window = new Views.MainWindow();
                 }
 
                 desktop.MainWindow = window;
                 desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnMainWindowClose;
 
-                // Подписываемся на события для логирования
                 desktop.Exit += (s, e) => Debug.WriteLine($"Application exiting with code {e.ApplicationExitCode}");
             }
 
