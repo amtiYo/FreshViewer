@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    <AvaloniaResource Include="LiquidGlass\Assets\**" />
+    <AvaloniaResource Include="Effects\LiquidGlass\Assets\**" />
     <AvaloniaResource Include="Styles\**" />
   </ItemGroup>
 

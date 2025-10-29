@@ -6,10 +6,13 @@ using Avalonia.Markup.Xaml;
 namespace FreshViewer.Services;
 
 /// <summary>
-/// Применение предустановленных тем LiquidGlass на лету.
+/// Loads the themed resource dictionaries that provide the Liquid Glass color palettes.
 /// </summary>
 public static class ThemeManager
 {
+    /// <summary>
+    /// Applies a theme by name by replacing the Liquid Glass resource dictionaries.
+    /// </summary>
     public static void Apply(string themeName)
     {
         var app = Application.Current;
@@ -31,7 +34,7 @@ public static class ThemeManager
             return;
         }
 
-        // Удаляем предыдущие LiquidGlass словари
+        // Remove previous Liquid Glass dictionaries before adding the new palette.
         for (var i = app.Resources.MergedDictionaries.Count - 1; i >= 0; i--)
         {
             if (app.Resources.MergedDictionaries[i] is ResourceDictionary existing

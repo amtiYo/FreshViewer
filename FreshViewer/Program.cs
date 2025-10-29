@@ -1,14 +1,17 @@
 using System;
-using System.IO;
 using Avalonia;
 
 namespace FreshViewer;
 
+/// <summary>
+/// Entry point hosting Avalonia's desktop lifetime for FreshViewer.
+/// </summary>
 internal static class Program
 {
-    private static readonly string StartupLogPath = Path.Combine(AppContext.BaseDirectory, "startup.log");
-
     [STAThread]
+    /// <summary>
+    /// Validates platform requirements and starts the Avalonia application.
+    /// </summary>
     public static void Main(string[] args)
     {
         if (!OperatingSystem.IsWindows())
@@ -19,6 +22,9 @@ internal static class Program
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
+    /// <summary>
+    /// Creates and configures the Avalonia application builder.
+    /// </summary>
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UseWin32()

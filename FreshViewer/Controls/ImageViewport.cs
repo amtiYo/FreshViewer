@@ -14,6 +14,9 @@ using FreshViewer.Services;
 
 namespace FreshViewer.Controls;
 
+/// <summary>
+/// Displays still images and animations with kinetic panning, zooming, and rotation support.
+/// </summary>
 public sealed class ImageViewport : Control, IDisposable
 {
     private const double LerpFactor = 0.18;
@@ -65,9 +68,21 @@ public sealed class ImageViewport : Control, IDisposable
 
     private DateTime _lastTick = DateTime.UtcNow;
 
+    /// <summary>
+    /// Raised when an image or animation finishes loading.
+    /// </summary>
     public event EventHandler<ImagePresentedEventArgs>? ImagePresented;
+    /// <summary>
+    /// Raised when the viewport transform (zoom, offset, or rotation) changes.
+    /// </summary>
     public event EventHandler? ViewStateChanged;
+    /// <summary>
+    /// Raised when loading an image fails with an exception.
+    /// </summary>
     public event EventHandler<ImageFailedEventArgs>? ImageFailed;
+    /// <summary>
+    /// Raised when the user clicks the background instead of the image content.
+    /// </summary>
     public event EventHandler? BackgroundClicked;
 
     public ImageViewport()
@@ -107,6 +122,9 @@ public sealed class ImageViewport : Control, IDisposable
         }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the viewport is rendered in fullscreen mode.
+    /// </summary>
     public bool IsFullscreen
     {
         get => _isFullscreen;
@@ -124,18 +142,39 @@ public sealed class ImageViewport : Control, IDisposable
         }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether an image is currently loaded.
+    /// </summary>
     public bool HasImage => _currentImage is not null;
 
+    /// <summary>
+    /// Determines whether the specified point is within the projected image bounds.
+    /// </summary>
     public bool IsPointWithinImage(Point point) => IsPointOnImage(point);
 
+    /// <summary>
+    /// Gets the current rotation angle in degrees.
+    /// </summary>
     public double Rotation => _rotation;
 
+    /// <summary>
+    /// Gets the current zoom factor applied to the image.
+    /// </summary>
     public double CurrentScale => _currentScale;
 
+    /// <summary>
+    /// Gets the current pan offset in device-independent units.
+    /// </summary>
     public Vector CurrentOffset => _currentOffset;
 
+    /// <summary>
+    /// Gets the geometric center of the viewport.
+    /// </summary>
     public Point ViewportCenterPoint => new Point(Bounds.Width / 2.0, Bounds.Height / 2.0);
 
+    /// <summary>
+    /// Loads an image asynchronously and optionally applies a transition animation.
+    /// </summary>
     public async Task LoadImageAsync(string path, ImageTransition transition = ImageTransition.FadeIn)
     {
         CancelLoading();
@@ -161,6 +200,9 @@ public sealed class ImageViewport : Control, IDisposable
         }
     }
 
+    /// <summary>
+    /// Resets zoom, rotation, and offset to fit the current image.
+    /// </summary>
     public void ResetView()
     {
         if (!HasImage)
@@ -173,6 +215,9 @@ public sealed class ImageViewport : Control, IDisposable
         ApplyFitToView();
     }
 
+    /// <summary>
+    /// Sets the target zoom so that the image fits inside the viewport bounds.
+    /// </summary>
     public void FitToView()
     {
         if (!HasImage)
@@ -235,12 +280,18 @@ public sealed class ImageViewport : Control, IDisposable
         _needsRedraw = true;
     }
 
+    /// <summary>
+    /// Adjusts the zoom by a fixed step around the supplied focus point.
+    /// </summary>
     public void ZoomIncrement(Point focusPoint, bool zoomIn)
     {
         var factor = zoomIn ? ZoomFactor : (1.0 / ZoomFactor);
         ZoomTo(_targetScale * factor, focusPoint);
     }
 
+    /// <summary>
+    /// Applies mouse wheel zooming using the configured step factor.
+    /// </summary>
     public void ZoomWithWheel(Point focusPoint, double wheelDelta)
     {
         var zoomFactor = 1.0 + wheelDelta * ZoomStep;
@@ -251,6 +302,9 @@ public sealed class ImageViewport : Control, IDisposable
         ZoomTo(_targetScale * zoomFactor, focusPoint);
     }
 
+    /// <summary>
+    /// Rotates the image clockwise by 90 degrees.
+    /// </summary>
     public void RotateClockwise()
     {
         if (!HasImage)
@@ -265,6 +319,9 @@ public sealed class ImageViewport : Control, IDisposable
         ViewStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Rotates the image counter-clockwise by 90 degrees.
+    /// </summary>
     public void RotateCounterClockwise()
     {
         if (!HasImage)
@@ -279,6 +336,9 @@ public sealed class ImageViewport : Control, IDisposable
         ViewStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Returns the pixel dimensions taking rotation into account.
+    /// </summary>
     public (int width, int height) GetEffectivePixelDimensions()
     {
         if (!HasImage)
@@ -292,6 +352,9 @@ public sealed class ImageViewport : Control, IDisposable
             : (pixelSize.Width, pixelSize.Height);
     }
 
+    /// <summary>
+    /// Retrieves the bitmap backing the current static image or animation frame.
+    /// </summary>
     public Bitmap? GetCurrentFrameBitmap()
     {
         if (_currentImage is null)
@@ -313,6 +376,9 @@ public sealed class ImageViewport : Control, IDisposable
         return _currentImage.Bitmap;
     }
 
+    /// <summary>
+    /// Gets the metadata associated with the currently loaded image.
+    /// </summary>
     public ImageMetadata? CurrentMetadata => _currentMetadata;
 
     public override void Render(DrawingContext context)
@@ -855,6 +921,9 @@ public sealed class ImageViewport : Control, IDisposable
         _loadingCts = null;
     }
 
+    /// <summary>
+    /// Releases image resources and stops the internal animation timer.
+    /// </summary>
     public void Dispose()
     {
         CancelLoading();
@@ -863,6 +932,9 @@ public sealed class ImageViewport : Control, IDisposable
     }
 }
 
+/// <summary>
+/// Event arguments describing the result of presenting an image.
+/// </summary>
 public sealed class ImagePresentedEventArgs : EventArgs
 {
     public ImagePresentedEventArgs(string path, (int width, int height) dimensions, bool isAnimated, ImageMetadata? metadata)
@@ -873,15 +945,30 @@ public sealed class ImagePresentedEventArgs : EventArgs
         Metadata = metadata;
     }
 
+    /// <summary>
+    /// Gets the path of the presented image.
+    /// </summary>
     public string Path { get; }
 
+    /// <summary>
+    /// Gets the effective pixel dimensions of the image or animation.
+    /// </summary>
     public (int Width, int Height) Dimensions { get; }
 
+    /// <summary>
+    /// Gets a value indicating whether the presented resource is animated.
+    /// </summary>
     public bool IsAnimated { get; }
 
+    /// <summary>
+    /// Gets the metadata extracted during the load phase.
+    /// </summary>
     public ImageMetadata? Metadata { get; }
 }
 
+/// <summary>
+/// Defines the supported transition animations when presenting images.
+/// </summary>
 public enum ImageTransition
 {
     None,
@@ -891,6 +978,9 @@ public enum ImageTransition
     Instant
 }
 
+/// <summary>
+/// Event arguments describing a failure while loading an image.
+/// </summary>
 public sealed class ImageFailedEventArgs : EventArgs
 {
     public ImageFailedEventArgs(string path, Exception exception)
@@ -899,7 +989,13 @@ public sealed class ImageFailedEventArgs : EventArgs
         Exception = exception;
     }
 
+    /// <summary>
+    /// Gets the path of the image that failed to load.
+    /// </summary>
     public string Path { get; }
 
+    /// <summary>
+    /// Gets the exception describing the failure.
+    /// </summary>
     public Exception Exception { get; }
 }

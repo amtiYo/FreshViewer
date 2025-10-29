@@ -17,6 +17,9 @@ using SixLabors.ImageSharp.Processing;
 
 namespace FreshViewer.Services;
 
+/// <summary>
+/// Loads still images and animations while extracting relevant metadata.
+/// </summary>
 public sealed class ImageLoader
 {
     private static readonly HashSet<string> AnimatedExtensions = new(StringComparer.OrdinalIgnoreCase)
@@ -35,6 +38,11 @@ public sealed class ImageLoader
         ".avif", ".heic", ".heif", ".psd", ".tga", ".svg", ".webp", ".hdr", ".exr", ".j2k", ".jp2", ".jpf"
     };
 
+    /// <summary>
+    /// Loads an image from disk and returns the decoded bitmap or animation data.
+    /// </summary>
+    /// <param name="path">The file path to load.</param>
+    /// <param name="cancellationToken">A cancellation token controlling the asynchronous work.</param>
     public async Task<LoadedImage> LoadAsync(string path, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(path))
@@ -203,6 +211,9 @@ public sealed class ImageLoader
     }
 }
 
+/// <summary>
+/// Represents a decoded image together with optional animation metadata.
+/// </summary>
 public sealed class LoadedImage : IDisposable
 {
     public LoadedImage(string path, Bitmap? bitmap, AnimatedImage? animated, ImageMetadata? metadata)
@@ -213,19 +224,40 @@ public sealed class LoadedImage : IDisposable
         Metadata = metadata;
     }
 
+    /// <summary>
+    /// Gets the original file path.
+    /// </summary>
     public string Path { get; }
 
+    /// <summary>
+    /// Gets the decoded bitmap when the image is static.
+    /// </summary>
     public Bitmap? Bitmap { get; }
 
+    /// <summary>
+    /// Gets the animation sequence when the image contains multiple frames.
+    /// </summary>
     public AnimatedImage? Animation { get; }
 
+    /// <summary>
+    /// Gets extracted metadata associated with the image.
+    /// </summary>
     public ImageMetadata? Metadata { get; }
 
+    /// <summary>
+    /// Gets a value indicating whether the image is animated.
+    /// </summary>
     public bool IsAnimated => Animation is not null;
 
+    /// <summary>
+    /// Gets the pixel size of the image or animation.
+    /// </summary>
     public PixelSize PixelSize
         => Animation?.PixelSize ?? Bitmap?.PixelSize ?? PixelSize.Empty;
 
+    /// <summary>
+    /// Releases bitmap resources.
+    /// </summary>
     public void Dispose()
     {
         Bitmap?.Dispose();
@@ -233,6 +265,9 @@ public sealed class LoadedImage : IDisposable
     }
 }
 
+/// <summary>
+/// Describes an animated image composed of individual frames and loop count.
+/// </summary>
 public sealed class AnimatedImage : IDisposable
 {
     public AnimatedImage(IReadOnlyList<AnimatedFrame> frames, int loopCount)
@@ -242,12 +277,24 @@ public sealed class AnimatedImage : IDisposable
         PixelSize = frames.Count > 0 ? frames[0].Bitmap.PixelSize : PixelSize.Empty;
     }
 
+    /// <summary>
+    /// Gets the frames that compose the animation.
+    /// </summary>
     public IReadOnlyList<AnimatedFrame> Frames { get; }
 
+    /// <summary>
+    /// Gets the loop count reported by the file (0 indicates infinite looping).
+    /// </summary>
     public int LoopCount { get; }
 
+    /// <summary>
+    /// Gets the pixel size of the animation.
+    /// </summary>
     public PixelSize PixelSize { get; }
 
+    /// <summary>
+    /// Releases frame resources.
+    /// </summary>
     public void Dispose()
     {
         foreach (var frame in Frames)
@@ -257,6 +304,9 @@ public sealed class AnimatedImage : IDisposable
     }
 }
 
+/// <summary>
+/// Represents a single frame in an animated image.
+/// </summary>
 public sealed class AnimatedFrame : IDisposable
 {
     public AnimatedFrame(Bitmap bitmap, MemoryStream backingStream, TimeSpan duration)
@@ -266,12 +316,21 @@ public sealed class AnimatedFrame : IDisposable
         Duration = duration;
     }
 
+    /// <summary>
+    /// Gets the bitmap representing the frame contents.
+    /// </summary>
     public Bitmap Bitmap { get; }
 
     private MemoryStream BackingStream { get; }
 
+    /// <summary>
+    /// Gets the time each frame should remain visible.
+    /// </summary>
     public TimeSpan Duration { get; }
 
+    /// <summary>
+    /// Releases bitmap and memory stream resources.
+    /// </summary>
     public void Dispose()
     {
         Bitmap.Dispose();

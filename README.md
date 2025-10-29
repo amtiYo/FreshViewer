@@ -51,8 +51,9 @@ The result is a calm, legible interface that stays out of the way while keeping 
 
 ## Build & run
 ```bash
-dotnet restore FreshViewer.sln
-dotnet build FreshViewer.sln -c Release
+dotnet restore
+dotnet build -warnaserror
+dotnet test
 dotnet run --project FreshViewer/FreshViewer.csproj -- <optional-image-path>
 ```
 
@@ -61,6 +62,12 @@ Publish (Windows x64, single file):
 dotnet publish FreshViewer/FreshViewer.csproj -c Release -r win-x64 \
   -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --self-contained=false
 ```
+
+### Liquid Glass effect
+- Requires Windows 10 1809+ with GPU-backed composition. The shader is disabled automatically on unsupported platforms.
+- Toggle the feature from **Settings → Liquid Glass effects** or via the `FRESHVIEWER_FORCE_LIQUID_GLASS` environment variable (`true`/`false`).
+- A small preview card inside the settings panel helps verify the shader versus the fallback gradient.
+- When the GPU path is unavailable the app renders a static translucent fallback so the UI remains legible.
 
 ## Settings
 - Themes: switch between pre‑tuned Liquid Glass palettes

@@ -23,6 +23,9 @@ using FreshViewer.Services;
 
 namespace FreshViewer.Views;
 
+/// <summary>
+/// Main window hosting the viewer UI and coordinating user interactions.
+/// </summary>
 public sealed partial class MainWindow : Window
 {
     private static readonly HashSet<string> SupportedExtensions = new(StringComparer.OrdinalIgnoreCase)
@@ -112,7 +115,7 @@ public sealed partial class MainWindow : Window
         InitializePanelState(_infoPanel, -80);
         InitializePanelState(_settingsPanel, 80);
 
-        // Применяем стартовые тему и язык
+        // Apply the persisted theme and language.
         LocalizationService.ApplyLanguage(_viewModel.SelectedLanguage);
         ThemeManager.Apply(_viewModel.SelectedTheme);
 
@@ -121,15 +124,18 @@ public sealed partial class MainWindow : Window
 
     private void ConfigureWindowChrome()
     {
-        // Упрощённый фон: без Mica/Acrylic/Blur, только обычный непрозрачный градиент.
+        // Simplified chrome: no Mica/Acrylic effects, just a transparent surface.
         TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
 
-        Background = Brushes.Transparent; // оставляем прозрачный бэкграунд окна, сам фон рисуем в XAML градиентом
+        Background = Brushes.Transparent; // Leave the window transparent; draw the background via XAML.
         ExtendClientAreaToDecorationsHint = true;
         ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.PreferSystemChrome;
         ExtendClientAreaTitleBarHeightHint = 32;
     }
 
+    /// <summary>
+    /// Applies command-line arguments captured by the desktop lifetime.
+    /// </summary>
     public void InitializeFromArguments(string[]? args)
     {
         if (args is { Length: > 0 })
@@ -1180,5 +1186,5 @@ public sealed partial class MainWindow : Window
         _viewModel.StatusText = "Шорткаты сброшены к профилю";
     }
 
-    // методы-ссылки не нужны, применяем сразу через PropertyChanged
+    // Helper methods are unnecessary; property setters trigger PropertyChanged immediately.
 }
