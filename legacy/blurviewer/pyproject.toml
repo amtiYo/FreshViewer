@@ -1,0 +1,162 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blurviewer"
+version = "0.8.1"
+description = "Professional image viewer with advanced format support and smooth animations"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "amtiYo", email = "artemijtkacenko@gmail.com"}
+]
+maintainers = [
+    {name = "amtiYo", email = "artemijtkacenko@gmail.com"}
+]
+keywords = [
+    "image", "viewer", "photo", "gallery", "raw", "heic", "avif", 
+    "desktop", "gui", "qt", "pyside6", "photography", "image-processing"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Graphics :: Viewers",
+    "Topic :: Desktop Environment",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "PySide6>=6.5.0",
+    "Pillow>=10.0.0",
+    "pillow-heif>=0.13.0",
+    "pillow-avif-plugin>=1.3.0",
+    "rawpy>=0.17.0",
+    "imageio>=2.31.0",
+    "opencv-python>=4.8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+    "pytest-qt>=4.0.0",
+]
+build = [
+    "build>=0.10.0",
+    "twine>=4.0.0",
+    "pyinstaller>=5.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/amtiYo/BlurViewer"
+Repository = "https://github.com/amtiYo/BlurViewer"
+Issues = "https://github.com/amtiYo/BlurViewer/issues"
+Documentation = "https://github.com/amtiYo/BlurViewer#readme"
+"Bug Tracker" = "https://github.com/amtiYo/BlurViewer/issues"
+"Source Code" = "https://github.com/amtiYo/BlurViewer"
+"Download" = "https://github.com/amtiYo/BlurViewer/releases"
+"Release Notes" = "https://github.com/amtiYo/BlurViewer/releases"
+
+[project.scripts]
+blurviewer = "BlurViewer:main"
+
+[project.gui-scripts]
+blurviewer-gui = "BlurViewer:main"
+
+[tool.setuptools]
+packages = ["."]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["*.ico", "*.png", "*.gif"]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["*.pyc", "__pycache__", "*.spec", "build", "dist", ".venv", "test_*"]
+
+# Development tools configuration
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503", "E501"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    "*.egg-info",
+    "test_*",
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false  # Allow untyped defs for Qt compatibility
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+ignore_missing_imports = true
+
+# PyInstaller configuration
+[tool.pyinstaller]
+name = "BlurViewer"
+onefile = true
+windowed = true
+icon = "BlurViewer.ico"
+add-data = ["BlurViewer.ico;."]
+hidden-import = [
+    "PIL._tkinter_finder",
+    "PIL._imagingtk",
+    "pillow_heif",
+    "pillow_avif",
+    "PySide6.QtCore",
+    "PySide6.QtGui", 
+    "PySide6.QtWidgets",
+]
+exclude = [
+    "*.pyc",
+    "__pycache__",
+    "*.spec",
+    "build",
+    "dist",
+    ".venv",
+    "test_*"
+]
