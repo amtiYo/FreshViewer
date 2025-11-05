@@ -9,9 +9,6 @@ namespace FreshViewer;
 internal static class Program
 {
     [STAThread]
-    /// <summary>
-    /// Validates platform requirements and starts the Avalonia application.
-    /// </summary>
     public static void Main(string[] args)
     {
         if (!OperatingSystem.IsWindows())
