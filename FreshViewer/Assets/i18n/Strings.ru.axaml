@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <x:String x:Key="Strings.Back">Назад</x:String>
+    <x:String x:Key="Strings.Forward">Вперёд</x:String>
+    <x:String x:Key="Strings.Fit">Подогнать</x:String>
+    <x:String x:Key="Strings.Rotate">Повернуть</x:String>
+    <x:String x:Key="Strings.Open">Открыть</x:String>
+    <x:String x:Key="Strings.Info">Инфо</x:String>
+    <x:String x:Key="Strings.Hide">Скрыть</x:String>
+    <x:String x:Key="Strings.Settings">Настройки</x:String>
+    <x:String x:Key="Strings.Screen">Экран</x:String>
+</ResourceDictionary>
+

@@ -1,0 +1,495 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:FreshViewer.Controls"
+        xmlns:vm="clr-namespace:FreshViewer.ViewModels"
+        xmlns:lg="clr-namespace:FreshViewer.Effects.LiquidGlass"
+
+        xmlns:easing="clr-namespace:Avalonia.Animation.Easings;assembly=Avalonia.Base"
+        xmlns:conv="clr-namespace:FreshViewer.Converters"
+        x:Class="FreshViewer.Views.MainWindow"
+        Title="FreshViewer 0.9-alpha"
+        Width="1440"
+        Height="900"
+        MinWidth="900"
+        MinHeight="640"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
+        ExtendClientAreaTitleBarHeightHint="32"
+        WindowStartupLocation="CenterScreen"
+        Icon="avares://FreshViewer/Assets/AppIcon.ico"
+        mc:Ignorable="d">
+  <Window.Resources>
+    <LinearGradientBrush x:Key="Aura.Background" StartPoint="0,0" EndPoint="1,1">
+      <GradientStop Color="#0C162C" Offset="0" />
+      <GradientStop Color="#16233A" Offset="0.42" />
+      <GradientStop Color="#101726" Offset="1" />
+    </LinearGradientBrush>
+
+    <RadialGradientBrush x:Key="Aura.BloomPrimary"
+                         Center="0.12,0.24"
+                         GradientOrigin="0.08,0.18"
+                         RadiusX="0.86"
+                         RadiusY="0.86">
+      <GradientStop Color="#4D78FF" Offset="0" />
+      <GradientStop Color="#00102900" Offset="1" />
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="Aura.BloomSecondary"
+                         Center="0.82,0.86"
+                         GradientOrigin="0.84,0.84"
+                         RadiusX="0.92"
+                         RadiusY="0.92">
+      <GradientStop Color="#FF7CD8" Offset="0" />
+      <GradientStop Color="#00102100" Offset="1" />
+    </RadialGradientBrush>
+
+    <SolidColorBrush x:Key="Glass.Surface" Color="#24FFFFFF" />
+    <LinearGradientBrush x:Key="Glass.Border" StartPoint="0,0" EndPoint="0,1">
+      <GradientStop Color="#86FFFFFF" Offset="0" />
+      <GradientStop Color="#22FFFFFF" Offset="1" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="Glass.Button" StartPoint="0,0" EndPoint="0,1">
+      <GradientStop Color="#6FFFFFFF" Offset="0" />
+      <GradientStop Color="#1EFFFFFF" Offset="1" />
+    </LinearGradientBrush>
+
+    <conv:BooleanToValueConverter x:Key="InfoButtonText" TrueValue="Скрыть" FalseValue="Инфо" />
+    <conv:BooleanToValueConverter x:Key="PlaceholderVisibility" TrueValue="False" FalseValue="True" />
+
+    <easing:SplineEasing x:Key="Ease.Out" X1="0.15" Y1="0.9" X2="0.35" Y2="1" />
+    <easing:SplineEasing x:Key="Ease.Back" X1="0.18" Y1="0.88" X2="0.32" Y2="1.08" />
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="TextBlock.heading">
+      <Setter Property="FontSize" Value="20" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="#F4F7FF" />
+    </Style>
+    <Style Selector="TextBlock.subtle">
+      <Setter Property="Foreground" Value="#B7C4DE" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="TextBlock.value">
+      <Setter Property="Foreground" Value="#F6FAFF" />
+      <Setter Property="FontSize" Value="14" />
+    </Style>
+  </Window.Styles>
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel FileName="sample.jpg"
+                            StatusText="Перетащите изображение сюда"
+                            ResolutionText="4096 × 2730"
+                            GalleryPositionText="1/12"
+                            IsInfoPanelVisible="True" />
+  </Design.DataContext>
+
+  <Window.DataContext>
+    <vm:MainWindowViewModel />
+  </Window.DataContext>
+
+  <Grid>
+    <Border Background="{StaticResource LiquidGlass.WindowBackground}" Opacity="1" />
+    <Canvas>
+      <Ellipse Width="820" Height="820" Fill="{StaticResource Aura.BloomPrimary}" Canvas.Left="-240" Canvas.Top="-260" />
+      <Ellipse Width="660" Height="660" Fill="{StaticResource Aura.BloomSecondary}" Canvas.Right="-220"
+               Canvas.Bottom="-220" />
+    </Canvas>
+
+    <controls:ImageViewport x:Name="ImageViewport"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch" />
+
+    <Grid x:Name="UiChrome"
+          Margin="56"
+          RenderTransformOrigin="0.5,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <lg:LiquidGlassDecorator Grid.Row="0" Radius="32" IsEffectEnabled="{Binding EnableLiquidGlass}">
+        <Border CornerRadius="32"
+                Padding="28,22"
+                Background="{StaticResource Glass.Surface}"
+                BorderBrush="{StaticResource Glass.Border}"
+                BorderThickness="1"
+                BoxShadow="0 18 30 0 #22000000"
+                HorizontalAlignment="Stretch"
+                MinWidth="720">
+          <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Spacing="18" VerticalAlignment="Center">
+              <Ellipse Width="14" Height="14" Fill="#FF61DE" />
+              <StackPanel Spacing="2">
+                <TextBlock Classes="heading" Text="FreshViewer" />
+                <TextBlock Text="{Binding FileName, TargetNullValue='Нет изображения'}"
+                           Foreground="#DDE7FF"
+                           FontSize="14"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="260" />
+              </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="12"
+                        VerticalAlignment="Center">
+              <Button Padding="14,10"
+                      CornerRadius="18"
+                      FontSize="13"
+                      FontWeight="SemiBold"
+                      Foreground="#081326"
+                      Background="{StaticResource Glass.Button}"
+                      BorderBrush="#36FFFFFF"
+                      BorderThickness="1"
+                      Cursor="Hand"
+                      Click="OnPreviousClicked"
+                      ToolTip.Tip="← / A">
+              <TextBlock Text="{DynamicResource Strings.Back}" />
+              </Button>
+              <Button Padding="14,10"
+                      CornerRadius="18"
+                      FontSize="13"
+                      FontWeight="SemiBold"
+                      Foreground="#081326"
+                      Background="{StaticResource Glass.Button}"
+                      BorderBrush="#36FFFFFF"
+                      BorderThickness="1"
+                      Cursor="Hand"
+                      Click="OnNextClicked"
+                      ToolTip.Tip="→ / D">
+              <TextBlock Text="{DynamicResource Strings.Forward}" />
+              </Button>
+              <!-- Fit button removed per request -->
+              <Button Padding="14,10"
+                      CornerRadius="18"
+                      FontSize="13"
+                      FontWeight="SemiBold"
+                      Foreground="#081326"
+                      Background="{StaticResource Glass.Button}"
+                      BorderBrush="#36FFFFFF"
+                      BorderThickness="1"
+                      Cursor="Hand"
+                      Click="OnRotateClicked"
+                      ToolTip.Tip="R / L">
+              <TextBlock Text="{DynamicResource Strings.Rotate}" />
+              </Button>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Spacing="12">
+              <Button Padding="14,10"
+                      CornerRadius="18"
+                      FontSize="13"
+                      FontWeight="SemiBold"
+                      Foreground="#081326"
+                      Background="{StaticResource Glass.Button}"
+                      BorderBrush="#36FFFFFF"
+                      BorderThickness="1"
+                      Cursor="Hand"
+                      Click="OnOpenButtonClicked"
+                      ToolTip.Tip="Ctrl+O · Открыть">
+              <TextBlock Text="{DynamicResource Strings.Open}" />
+              </Button>
+              <Button Padding="14,10"
+                      CornerRadius="18"
+                      FontSize="13"
+                      FontWeight="SemiBold"
+                      Foreground="#081326"
+                      Background="{StaticResource Glass.Button}"
+                      BorderBrush="#36FFFFFF"
+                      BorderThickness="1"
+                      Cursor="Hand"
+                      Click="OnToggleInfoClicked"
+                      ToolTip.Tip="I · Панель информации">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <Path Data="M10,4 A6,6 0 1 1 9.999,4"
+                        Stroke="#081326"
+                        StrokeThickness="1.8"
+                        Fill="Transparent" />
+                  <TextBlock Text="{Binding IsInfoPanelVisible, Converter={StaticResource InfoButtonText}}" />
+                </StackPanel>
+              </Button>
+              <Button Padding="14,10"
+                      CornerRadius="18"
+                      FontSize="13"
+                      FontWeight="SemiBold"
+                      Foreground="#081326"
+                      Background="{StaticResource Glass.Button}"
+                      BorderBrush="#36FFFFFF"
+                      BorderThickness="1"
+                      Cursor="Hand"
+                      Click="OnToggleSettingsClicked"
+                      ToolTip.Tip="P · Настройки">
+                <TextBlock Text="{DynamicResource Strings.Settings}" />
+              </Button>
+              <!-- Fullscreen button removed per request -->
+            </StackPanel>
+          </Grid>
+        </Border>
+      </lg:LiquidGlassDecorator>
+
+      <lg:LiquidGlassDecorator Grid.Row="2" Radius="20" IsEffectEnabled="{Binding EnableLiquidGlass}">
+        <Border CornerRadius="20"
+                Padding="18,12"
+                Margin="0,28,0,0"
+                Width="520"
+                Background="{StaticResource Glass.Surface}"
+                BorderBrush="{StaticResource Glass.Border}"
+                BorderThickness="1"
+                BoxShadow="0 16 28 0 #22000000"
+                HorizontalAlignment="Center">
+          <StackPanel>
+            <TextBlock Text="{Binding StatusText}"
+                       Foreground="#F8FBFF"
+                       FontSize="15"
+                       FontWeight="SemiBold" />
+            <TextBlock Classes="subtle"
+                       Text="Колесо — зум · Перемещение — перетаскивание · Space/F — подогнать · Q — скрыть интерфейс · Ctrl+C — копировать кадр"
+                       TextWrapping="Wrap"
+                       Margin="0,6,0,0" />
+          </StackPanel>
+        </Border>
+      </lg:LiquidGlassDecorator>
+    </Grid>
+
+    <lg:LiquidGlassDecorator Radius="22" IsEffectEnabled="{Binding EnableLiquidGlass}">
+      <Border x:Name="SummaryCard"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Top"
+              Margin="36,64,0,0"
+              Padding="22"
+              Width="280"
+              CornerRadius="22"
+              Background="{StaticResource Glass.Surface}"
+              BorderBrush="{StaticResource Glass.Border}"
+              BorderThickness="1"
+              BoxShadow="0 14 26 0 #22000000">
+        <StackPanel Spacing="6">
+          <TextBlock Text="{Binding FileName, TargetNullValue='Нет изображения'}"
+                     Foreground="#F6FAFF"
+                     FontSize="17"
+                     FontWeight="SemiBold"
+                     TextWrapping="Wrap"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Text="{Binding ResolutionText, TargetNullValue='—'}"
+                     Foreground="#CBD7F1"
+                     FontSize="13" />
+          <TextBlock Text="{Binding GalleryPositionText, TargetNullValue=''}"
+                     Foreground="#9EB0D5"
+                     FontSize="12" />
+        </StackPanel>
+      </Border>
+    </lg:LiquidGlassDecorator>
+
+    <lg:LiquidGlassDecorator Radius="34" IsEffectEnabled="{Binding EnableLiquidGlass}">
+      <Border x:Name="InfoPanel"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Stretch"
+              Margin="36,150,0,48"
+              Width="520"
+              Padding="36"
+              CornerRadius="34"
+              Background="{StaticResource Glass.Surface}"
+              BorderBrush="{StaticResource Glass.Border}"
+              BorderThickness="1"
+              BoxShadow="0 22 36 0 #22000000"
+              Opacity="0"
+              IsVisible="False"
+              IsHitTestVisible="False"
+              RenderTransformOrigin="0,0.5">
+        <Border.RenderTransform>
+          <TranslateTransform X="-80" />
+        </Border.RenderTransform>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+          <StackPanel Spacing="18">
+            <TextBlock Classes="heading" Text="Информация о файле" />
+            <ItemsControl ItemsSource="{Binding MetadataSections}" IsVisible="{Binding HasMetadataDetails}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Spacing="12" Margin="0,0,0,16">
+                    <TextBlock Text="{Binding Title}"
+                               Foreground="#E4EEFF"
+                               FontSize="16"
+                               FontWeight="SemiBold" />
+                    <ItemsControl ItemsSource="{Binding Items}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <Grid ColumnDefinitions="Auto,*" Margin="0,4,0,0">
+                            <TextBlock Text="{Binding Label}"
+                                       Foreground="#B7C4E1"
+                                       FontSize="12"
+                                       Margin="0,0,12,0" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding DisplayValue}"
+                                       Foreground="#F4F7FF"
+                                       FontSize="13"
+                                       TextWrapping="Wrap" />
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Classes="subtle"
+                       Text="Метаданные появятся, когда изображение содержит EXIF, XMP или другие сведения."
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding HasMetadataDetails, Converter={StaticResource PlaceholderVisibility}}" />
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+    </lg:LiquidGlassDecorator>
+
+    <lg:LiquidGlassDecorator Radius="30" IsEffectEnabled="{Binding EnableLiquidGlass}">
+      <Border x:Name="SettingsPanel"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Top"
+              Margin="0,160,36,0"
+              Width="420"
+              Padding="32"
+              CornerRadius="30"
+              Background="{StaticResource Glass.Surface}"
+              BorderBrush="{StaticResource Glass.Border}"
+              BorderThickness="1"
+              BoxShadow="0 22 36 0 #22000000"
+              Opacity="0"
+              IsVisible="False"
+              IsHitTestVisible="False"
+              RenderTransformOrigin="1,0">
+        <Border.RenderTransform>
+          <TranslateTransform X="80" />
+        </Border.RenderTransform>
+        <StackPanel Spacing="18">
+          <TextBlock Classes="heading" Text="Настройки" Margin="0,0,0,4" />
+          <StackPanel Spacing="10">
+            <TextBlock Classes="subtle" Text="Тема интерфейса" />
+            <ComboBox ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding SelectedTheme}" />
+          </StackPanel>
+          <StackPanel Spacing="10">
+            <TextBlock Classes="subtle" Text="Язык" />
+            <ComboBox ItemsSource="{Binding LanguageOptions}" SelectedItem="{Binding SelectedLanguage}" />
+          </StackPanel>
+          <StackPanel Spacing="10">
+            <TextBlock Classes="subtle" Text="Профиль горячих клавиш" />
+            <ComboBox ItemsSource="{Binding ShortcutProfiles}" SelectedItem="{Binding SelectedShortcutProfile}" />
+          </StackPanel>
+          <StackPanel Spacing="14">
+            <ToggleSwitch Content="Liquid Glass эффекты" IsChecked="{Binding EnableLiquidGlass}" />
+            <ToggleSwitch Content="Анимации интерфейса" IsChecked="{Binding EnableAmbientAnimations}" />
+          </StackPanel>
+          <lg:LiquidGlassDecorator Radius="18"
+                                   Intensity="0.7"
+                                   BlurAmount="0.2"
+                                   ChromaticAberration="0.3"
+                                   IsEffectEnabled="{Binding EnableLiquidGlass}">
+            <Border Padding="16"
+                    CornerRadius="18"
+                    Background="#3CFFFFFF"
+                    BorderBrush="#52FFFFFF"
+                    BorderThickness="1">
+              <StackPanel Spacing="6">
+                <TextBlock Text="Liquid Glass preview"
+                           Foreground="#0E1426"
+                           FontWeight="SemiBold"
+                           FontSize="14" />
+                <TextBlock Text="Toggle the switch above to compare the shader and fallback rendering."
+                           Foreground="#1A1F32"
+                           FontSize="12"
+                           TextWrapping="Wrap" />
+              </StackPanel>
+            </Border>
+          </lg:LiquidGlassDecorator>
+          <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+            <Button Padding="10,8" Click="OnExportShortcutsClicked">Экспорт</Button>
+            <Button Padding="10,8" Click="OnImportShortcutsClicked">Импорт</Button>
+            <Button Padding="10,8" Click="OnResetShortcutsClicked">Сброс</Button>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </lg:LiquidGlassDecorator>
+
+    <Border x:Name="DragOverlay"
+            IsVisible="False"
+            Background="#9F0E1830"
+            CornerRadius="36"
+            BorderBrush="#75FFFFFF"
+            BorderThickness="2"
+            Margin="36">
+      <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+          <TextBlock Text="Отпустите, чтобы открыть изображение"
+                     Foreground="#FBFDFF"
+                     FontSize="24"
+                     FontWeight="SemiBold"
+                     HorizontalAlignment="Center" />
+          <TextBlock Text="Поддерживаются RAW, HEIC/HEIF, AVIF, PSD и десятки других форматов"
+                     Foreground="#D0DBF9"
+                     FontSize="14"
+                     HorizontalAlignment="Center" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border Background="#C0101B33"
+            IsVisible="{Binding IsErrorVisible}">
+      <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="520">
+        <Border CornerRadius="34"
+                Padding="32"
+                Background="{StaticResource Glass.Surface}"
+                BorderBrush="{StaticResource Glass.Border}"
+                BorderThickness="1"
+                BoxShadow="0 18 30 0 #22000000">
+          <StackPanel Spacing="16">
+            <TextBlock Text="{Binding ErrorTitle}" Foreground="#FFBBC8" FontSize="20" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding ErrorDescription}"
+                       Foreground="#F9FBFF"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       MaxWidth="456" />
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="12">
+              <Button Padding="14,10"
+                      CornerRadius="18"
+                      FontSize="13"
+                      FontWeight="SemiBold"
+                      Foreground="#081326"
+                      Background="{StaticResource Glass.Button}"
+                      BorderBrush="#36FFFFFF"
+                      BorderThickness="1"
+                      Cursor="Hand"
+                      Click="OnErrorOverlayOpenAnother">
+                <TextBlock Text="Открыть другое" />
+              </Button>
+              <Button Padding="14,10"
+                      CornerRadius="18"
+                      FontSize="13"
+                      FontWeight="SemiBold"
+                      Foreground="#081326"
+                      Background="{StaticResource Glass.Button}"
+                      BorderBrush="#36FFFFFF"
+                      BorderThickness="1"
+                      Cursor="Hand"
+                      Click="OnErrorOverlayDismissed">
+                <TextBlock Text="Закрыть" />
+              </Button>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Border>
+  </Grid>
+</Window>
+

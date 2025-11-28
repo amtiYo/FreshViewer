@@ -1,0 +1,80 @@
+// Liquid Glass shader adapted for Avalonia + SkiaSharp runtime effects.
+// The shader samples the existing framebuffer, adds a soft distortion,
+// and applies subtle chromatic aberration to emulate a glass surface.
+
+uniform float2 resolution;           // Size of the decorated area in pixels
+uniform float intensity;             // General distortion strength (0..1)
+uniform float blurAmount;            // Additional soft blur (0..1)
+uniform float chromaticAberration;   // Chromatic aberration offset (0..1)
+uniform float saturation;            // Saturation multiplier (0..2)
+uniform shader backgroundTexture;    // Render target snapshot beneath the decorator
+
+static const float3 luminanceWeights = float3(0.299, 0.587, 0.114);
+
+half4 sampleBackground(float2 uv)
+{
+    float2 clamped = clamp(uv, float2(0.0, 0.0), float2(1.0, 1.0));
+    return sample(backgroundTexture, clamped * resolution);
+}
+
+half4 adjustSaturation(half4 color, float multiplier)
+{
+    half luminance = dot(color.rgb, half3(luminanceWeights));
+    half3 grey = half3(luminance, luminance, luminance);
+    return half4(mix(grey, color.rgb, half(multiplier)), color.a);
+}
+
+half4 gatherBlur(float2 uv, float strength)
+{
+    if (strength <= 0.001)
+    {
+        return sampleBackground(uv);
+    }
+
+    float radius = strength * 0.008;
+    float2 offsets[4] = float2[4](
+        float2( radius,  radius),
+        float2(-radius,  radius),
+        float2( radius, -radius),
+        float2(-radius, -radius)
+    );
+
+    half4 sum = half4(0.0);
+    for (int i = 0; i < 4; ++i)
+    {
+        sum += sampleBackground(uv + offsets[i]);
+    }
+
+    return sum * 0.25;
+}
+
+half4 main(float2 coord)
+{
+    float2 uv = coord / resolution;
+    float2 centered = uv - 0.5;
+    float distanceFromCenter = length(centered);
+
+    float ripple = sin(distanceFromCenter * 10.5) * intensity * 0.015;
+    float2 direction = distanceFromCenter > 0.0001 ? centered / distanceFromCenter : float2(0.0, 0.0);
+    float2 rippleOffset = direction * ripple;
+
+    float aberration = chromaticAberration * 0.003;
+
+    float2 uvR = uv + rippleOffset + float2(aberration, 0.0);
+    float2 uvG = uv + rippleOffset * 0.5;
+    float2 uvB = uv - rippleOffset - float2(aberration, 0.0);
+
+    half4 sampleR = sampleBackground(uvR);
+    half4 sampleG = gatherBlur(uvG, blurAmount);
+    half4 sampleB = sampleBackground(uvB);
+
+    half4 combined = half4(sampleR.r, sampleG.g, sampleB.b, sampleG.a);
+    combined = adjustSaturation(combined, saturation);
+
+    // Brighten edges slightly to mimic light scattering.
+    float edge = smoothstep(0.92, 1.02, distanceFromCenter * 1.4);
+    combined.rgb += half3(edge * 0.08, edge * 0.1, edge * 0.12);
+
+    combined.a = 1.0;
+    return combined;
+}

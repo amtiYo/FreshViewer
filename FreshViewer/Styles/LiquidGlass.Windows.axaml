@@ -1,0 +1,54 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <RadialGradientBrush x:Key="LiquidGlass.WindowBackground" Center="0.32,0.28" RadiusX="1.2" RadiusY="1.2">
+    <GradientStop Color="#14213A" Offset="0"/>
+    <GradientStop Color="#1E2F4F" Offset="0.45"/>
+    <GradientStop Color="#101B2E" Offset="1"/>
+  </RadialGradientBrush>
+
+  <SolidColorBrush x:Key="LiquidGlass.WaterHighlight" Color="#9AFFFFFF"/>
+  <SolidColorBrush x:Key="LiquidGlass.TextPrimary" Color="#F4F7FF"/>
+  <SolidColorBrush x:Key="LiquidGlass.TextSecondary" Color="#B3C2DE"/>
+  <SolidColorBrush x:Key="LiquidGlass.Accent" Color="#7AA6FF"/>
+
+  <SolidColorBrush x:Key="LiquidGlass.CardBackground" Color="#40FFFFFF"/>
+  <SolidColorBrush x:Key="LiquidGlass.CardBorder" Color="#5EFFFFFF"/>
+  <LinearGradientBrush x:Key="LiquidGlass.CardHighlightOverlay" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="#B5FFFFFF" Offset="0"/>
+    <GradientStop Color="#2AFFFFFF" Offset="0.65"/>
+    <GradientStop Color="#0FFFFFFF" Offset="1"/>
+  </LinearGradientBrush>
+  <RadialGradientBrush x:Key="LiquidGlass.CardAccentGlow" Center="0.2,0.15" RadiusX="0.85" RadiusY="0.85">
+    <GradientStop Color="#6DF7FF" Offset="0"/>
+    <GradientStop Color="#00F7FF" Offset="1"/>
+  </RadialGradientBrush>
+  <SolidColorBrush x:Key="LiquidGlass.CardDivider" Color="#32FFFFFF"/>
+
+  <LinearGradientBrush x:Key="LiquidGlass.TopHighlightOverlay" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="#CCFFFFFF" Offset="0"/>
+    <GradientStop Color="#24FFFFFF" Offset="0.85"/>
+    <GradientStop Color="#0AFFFFFF" Offset="1"/>
+  </LinearGradientBrush>
+  <LinearGradientBrush x:Key="LiquidGlass.BottomGlowOverlay" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="#05FFFFFF" Offset="0"/>
+    <GradientStop Color="#46A4FFFF" Offset="1"/>
+  </LinearGradientBrush>
+
+  <x:Double x:Key="LiquidGlass.MetadataCard.DisplacementScale">52</x:Double>
+  <x:Double x:Key="LiquidGlass.MetadataCard.BlurAmount">0.26</x:Double>
+  <x:Double x:Key="LiquidGlass.MetadataCard.Aberration">4.4</x:Double>
+  <x:Double x:Key="LiquidGlass.MetadataCard.CornerRadiusScalar">26</x:Double>
+  <CornerRadius x:Key="LiquidGlass.MetadataCard.CornerRadius">26</CornerRadius>
+
+  <x:Double x:Key="LiquidGlass.HintCard.DisplacementScale">44</x:Double>
+  <x:Double x:Key="LiquidGlass.HintCard.BlurAmount">0.2</x:Double>
+  <x:Double x:Key="LiquidGlass.HintCard.Aberration">3.6</x:Double>
+  <x:Double x:Key="LiquidGlass.HintCard.CornerRadiusScalar">30</x:Double>
+  <CornerRadius x:Key="LiquidGlass.HintCard.CornerRadius">30</CornerRadius>
+
+  <x:Double x:Key="LiquidGlass.InfoPanel.DisplacementScale">52</x:Double>
+  <x:Double x:Key="LiquidGlass.InfoPanel.BlurAmount">0.26</x:Double>
+  <x:Double x:Key="LiquidGlass.InfoPanel.Aberration">5.8</x:Double>
+  <x:Double x:Key="LiquidGlass.InfoPanel.CornerRadiusScalar">34</x:Double>
+  <CornerRadius x:Key="LiquidGlass.InfoPanel.CornerRadius">34</CornerRadius>
+</ResourceDictionary>
